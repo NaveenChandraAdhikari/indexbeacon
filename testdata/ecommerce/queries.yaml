@@ -1,0 +1,79 @@
+# Weighted query mix for the idxa e2e workload runner
+# (testdata/ecommerce/workload). Parameters are $1.. and are bound with
+# realistic values sampled from the database; `params` lists the sampler for
+# each positional parameter:
+#   customer_id | product_id | order_id | sku | event_type | since | tracking_no | category_id
+queries:
+  - name: orders_by_customer
+    weight: 30
+    params: [customer_id]
+    sql: >-
+      SELECT id, status, total_cents, created_at
+      FROM shop.orders
+      WHERE customer_id = $1
+      ORDER BY created_at DESC
+      LIMIT 20
+
+  - name: pending_orders
+    weight: 5
+    params: []
+    sql: >-
+      SELECT id, customer_id, created_at
+      FROM shop.orders
+      WHERE status = 'pending'
+      ORDER BY created_at
+      LIMIT 100
+
+  - name: customer_events_feed
+    weight: 25
+    params: [customer_id, event_type, since]
+    sql: >-
+      SELECT id, occurred_at, product_id
+      FROM shop.events
+      WHERE customer_id = $1 AND event_type = $2 AND occurred_at > $3
+      ORDER BY occurred_at DESC
+      LIMIT 50
+
+  - name: product_by_sku
+    weight: 15
+    params: [sku]
+    sql: >-
+      SELECT id, name, price_cents, active
+      FROM shop.products
+      WHERE sku = $1
+
+  - name: order_items_with_products
+    weight: 15
+    params: [order_id]
+    sql: >-
+      SELECT oi.id, oi.quantity, oi.unit_cents, p.name, p.sku
+      FROM shop.order_items oi
+      JOIN shop.products p ON p.id = oi.product_id
+      WHERE oi.order_id = $1
+
+  - name: order_by_pk
+    weight: 5
+    params: [order_id]
+    sql: >-
+      SELECT o.id, o.status, o.total_cents, c.email
+      FROM shop.orders o
+      JOIN shop.customers c ON c.id = o.customer_id
+      WHERE o.id = $1
+
+  - name: shipment_by_tracking
+    weight: 3
+    params: [tracking_no]
+    sql: >-
+      SELECT id, order_id, carrier, shipped_at, delivered_at
+      FROM shop.shipments
+      WHERE tracking_no = $1
+
+  - name: products_in_category
+    weight: 2
+    params: [category_id]
+    sql: >-
+      SELECT id, name, price_cents
+      FROM shop.products
+      WHERE category_id = $1 AND active
+      ORDER BY price_cents
+      LIMIT 25

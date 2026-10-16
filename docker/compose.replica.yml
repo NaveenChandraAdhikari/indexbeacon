@@ -1,0 +1,84 @@
+# Primary + 2 streaming replicas (physical replication via pg_basebackup).
+#
+#   docker compose -f docker/compose.replica.yml up -d --build
+#   primary:  postgres://idxa:idxa@localhost:5499/idxa
+#   replica1: postgres://idxa:idxa@localhost:5500/idxa
+#   replica2: postgres://idxa:idxa@localhost:5501/idxa
+#
+# The replicas run pg_basebackup against the primary on first start, write a
+# standby.signal, and then stream WAL. Data lives on tmpfs, so `down` wipes it.
+x-pg-common: &pg-common
+  build: .
+  image: idxa/postgres:16
+  environment: &pg-env
+    POSTGRES_USER: idxa
+    POSTGRES_PASSWORD: idxa
+    POSTGRES_DB: idxa
+    PGUSER: idxa
+    PGPASSWORD: idxa
+  tmpfs:
+    - /var/lib/postgresql/data
+
+x-replica: &replica
+  <<: *pg-common
+  depends_on:
+    primary:
+      condition: service_healthy
+  # Take a base backup from the primary (with a replication slot), then start
+  # postgres in standby mode. `-R` writes standby.signal + primary_conninfo.
+  entrypoint: ["/bin/bash", "-c"]
+  healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U idxa -d idxa && psql -U idxa -d idxa -tAc 'select pg_is_in_recovery()' | grep -q t"]
+    interval: 2s
+    timeout: 3s
+    retries: 60
+
+services:
+  primary:
+    <<: *pg-common
+    container_name: idxa-pg16-primary
+    ports:
+      - "5499:5432"
+    command:
+      - postgres
+      - -c
+      - wal_level=replica
+      - -c
+      - max_wal_senders=10
+      - -c
+      - max_replication_slots=10
+      - -c
+      - hot_standby=on
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U idxa -d idxa"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  replica1:
+    <<: *replica
+    container_name: idxa-pg16-replica1
+    ports:
+      - "5500:5432"
+    command:
+      - |
+        set -e
+        chown postgres:postgres "$$PGDATA" && chmod 700 "$$PGDATA"
+        until gosu postgres pg_basebackup -h primary -U idxa -D "$$PGDATA" -R -X stream -C -S replica1 --no-password; do
+          echo "waiting for primary..."; sleep 2
+        done
+        exec gosu postgres postgres -c hot_standby=on
+
+  replica2:
+    <<: *replica
+    container_name: idxa-pg16-replica2
+    ports:
+      - "5501:5432"
+    command:
+      - |
+        set -e
+        chown postgres:postgres "$$PGDATA" && chmod 700 "$$PGDATA"
+        until gosu postgres pg_basebackup -h primary -U idxa -D "$$PGDATA" -R -X stream -C -S replica2 --no-password; do
+          echo "waiting for primary..."; sleep 2
+        done
+        exec gosu postgres postgres -c hot_standby=on

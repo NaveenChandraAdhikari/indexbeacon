@@ -1,0 +1,8 @@
+*.out
+*.test
+.DS_Store
+/bin/
+/dist/
+coverage.*
+idxa-tmp
+.browser-test-out/

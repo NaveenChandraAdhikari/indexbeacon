@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" width="880" height="330" role="img" aria-label="How idxa works: read statistics, parse queries, propose indexes, score them, and confirm each against the planner">
+  <title>How idxa decides</title>
+  <desc>A pipeline. Query statistics are parsed into predicates, turned into candidate indexes, scored, and then each candidate is created hypothetically so the planner can confirm or reject it.</desc>
+
+  <defs>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7ec79c" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#7ec79c" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#7ec79c" stop-opacity="0"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" fill="#3f433c"/>
+    </marker>
+  </defs>
+
+  <style>
+    .box   { fill:#1e201d; stroke:#2e312c; stroke-width:1; }
+    .title { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+             font-size:13px; font-weight:600; fill:#eceee9; }
+    .body  { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+             font-size:11px; fill:#a2a69c; }
+    .mono  { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; fill:#7ec79c; }
+    .step  { font-family:ui-monospace,monospace; font-size:10px; fill:#74786e; }
+  </style>
+
+  <rect width="880" height="330" rx="14" fill="#161715"/>
+
+  <!-- The connecting line, with a pulse travelling along it so the eye
+       follows the direction of the pipeline. -->
+  <line x1="60" y1="118" x2="820" y2="118" stroke="#2e312c" stroke-width="2"/>
+  <circle r="4" fill="#7ec79c" opacity="0.9">
+    <animateMotion dur="4.5s" repeatCount="indefinite"
+                   path="M60,118 L820,118"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.05;0.9;1"
+             dur="4.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- 1. Statistics ─────────────────────────────────────────────────────-->
+  <g transform="translate(40, 60)">
+    <rect class="box" width="150" height="116" rx="10"/>
+    <text class="step" x="14" y="20">1</text>
+    <text class="title" x="14" y="40">Read</text>
+    <text class="body" x="14" y="60">Query statistics,</text>
+    <text class="body" x="14" y="76">table and column</text>
+    <text class="body" x="14" y="92">statistics.</text>
+    <text class="mono" x="14" y="108">pg_stat_statements</text>
+  </g>
+
+  <!-- 2. Parse ──────────────────────────────────────────────────────────-->
+  <g transform="translate(210, 60)">
+    <rect class="box" width="150" height="116" rx="10"/>
+    <text class="step" x="14" y="20">2</text>
+    <text class="title" x="14" y="40">Parse</text>
+    <text class="body" x="14" y="60">The real PostgreSQL</text>
+    <text class="body" x="14" y="76">grammar, not regular</text>
+    <text class="body" x="14" y="92">expressions.</text>
+    <text class="mono" x="14" y="108">WHERE &#183; JOIN &#183; ORDER BY</text>
+  </g>
+
+  <!-- 3. Propose ────────────────────────────────────────────────────────-->
+  <g transform="translate(380, 60)">
+    <rect class="box" width="150" height="116" rx="10"/>
+    <text class="step" x="14" y="20">3</text>
+    <text class="title" x="14" y="40">Propose</text>
+    <text class="body" x="14" y="60">Equality columns</text>
+    <text class="body" x="14" y="76">first, then a range,</text>
+    <text class="body" x="14" y="92">then the sort.</text>
+    <text class="mono" x="14" y="108">btree &#183; gin &#183; brin</text>
+  </g>
+
+  <!-- 4. Score ──────────────────────────────────────────────────────────-->
+  <g transform="translate(550, 60)">
+    <rect class="box" width="150" height="116" rx="10"/>
+    <text class="step" x="14" y="20">4</text>
+    <text class="title" x="14" y="40">Score</text>
+    <text class="body" x="14" y="60">Saving weighed</text>
+    <text class="body" x="14" y="76">against the cost on</text>
+    <text class="body" x="14" y="92">every write.</text>
+    <text class="mono" x="14" y="108">planner cost constants</text>
+  </g>
+
+  <!-- 5. Confirm ────────────────────────────────────────────────────────-->
+  <g transform="translate(720, 60)">
+    <rect class="box" width="120" height="116" rx="10" stroke="#7ec79c" stroke-opacity="0.5"/>
+    <text class="step" x="14" y="20">5</text>
+    <text class="title" x="14" y="40">Confirm</text>
+    <text class="body" x="14" y="60">Create it</text>
+    <text class="body" x="14" y="76">hypothetically and</text>
+    <text class="body" x="14" y="92">re-plan.</text>
+    <text class="mono" x="14" y="108">hypopg</text>
+
+    <!-- A quiet pulse on the box that matters most. -->
+    <rect width="120" height="116" rx="10" fill="none" stroke="#7ec79c" stroke-width="1.5">
+      <animate attributeName="stroke-opacity" values="0;0.8;0"
+               dur="4.5s" begin="3.2s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- The verdict ────────────────────────────────────────────────────────-->
+  <g transform="translate(40, 220)">
+    <text class="body" x="0" y="0" font-size="12" fill="#74786e">
+      The last step is the one that matters: a cost model can be confident and wrong.
+    </text>
+
+    <!-- Two outcomes. -->
+    <g transform="translate(0, 20)">
+      <rect width="392" height="62" rx="8" fill="#1c2c23"/>
+      <text class="mono" x="16" y="24" fill="#7ec79c">planner confirmed</text>
+      <text class="body" x="16" y="44">cost falls from 23,972 to 4 &#183; kept, ranked by what it saves</text>
+      <circle cx="374" cy="31" r="5" fill="#7ec79c">
+        <animate attributeName="opacity" values="0.35;1;0.35" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <g transform="translate(408, 20)">
+      <rect width="392" height="62" rx="8" fill="#2b2416"/>
+      <text class="mono" x="16" y="24" fill="#d9b45f">planner declined</text>
+      <text class="body" x="16" y="44">shown and demoted &#183; an unused index costs disk and every write</text>
+      <circle cx="374" cy="31" r="5" fill="#d9b45f">
+        <animate attributeName="opacity" values="0.35;1;0.35" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+</svg>

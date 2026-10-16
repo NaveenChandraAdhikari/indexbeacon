@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 260" width="880" height="260" role="img" aria-label="idxa, a PostgreSQL index advisor that validates its recommendations against the planner">
+  <title>idxa</title>
+  <desc>An animated banner: a sequential scan sweeping a table, replaced by an index lookup.</desc>
+
+  <defs>
+    <!-- The palette follows the interface: a muted green against near-black,
+         readable on both GitHub themes because the background is painted. -->
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7ec79c"/>
+      <stop offset="1" stop-color="#5aa8c8"/>
+    </linearGradient>
+
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e79289" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#e79289" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#e79289" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- One row of the table, reused across the grid. -->
+    <g id="cell">
+      <rect width="26" height="12" rx="2" fill="#2e312c"/>
+    </g>
+  </defs>
+
+  <rect width="880" height="260" rx="14" fill="#161715"/>
+
+  <!-- Wordmark ───────────────────────────────────────────────────────────-->
+  <g transform="translate(48, 52)">
+    <rect width="34" height="34" rx="9" fill="url(#mark)"/>
+    <!-- A magnifier over the mark, drawn rather than an emoji so it renders
+         identically everywhere. -->
+    <circle cx="15" cy="15" r="7.5" fill="none" stroke="#161715" stroke-width="2.6"/>
+    <line x1="20.5" y1="20.5" x2="26" y2="26" stroke="#161715" stroke-width="2.6" stroke-linecap="round"/>
+
+    <text x="48" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+          font-size="30" font-weight="650" fill="#eceee9" letter-spacing="-0.5">idxa</text>
+    <text x="48" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+          font-size="13" fill="#a2a69c">Find the indexes your queries are missing</text>
+  </g>
+
+  <!-- Read-only badge ────────────────────────────────────────────────────-->
+  <g transform="translate(700, 52)">
+    <rect width="132" height="26" rx="13" fill="#1c2c23"/>
+    <circle cx="16" cy="13" r="4" fill="#7ec79c"/>
+    <text x="28" y="17" font-family="-apple-system, BlinkMacSystemFont, sans-serif"
+          font-size="12" font-weight="600" fill="#7ec79c">never writes</text>
+  </g>
+
+  <!-- Left panel: a sequential scan ─────────────────────────────────────-->
+  <g transform="translate(48, 124)">
+    <text font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11"
+          fill="#74786e" y="-8">before &#183; sequential scan</text>
+
+    <g>
+      <!-- 5 rows x 12 columns of cells. -->
+      <g transform="translate(0,0)">
+        <use href="#cell" x="0"/><use href="#cell" x="30"/><use href="#cell" x="60"/>
+        <use href="#cell" x="90"/><use href="#cell" x="120"/><use href="#cell" x="150"/>
+        <use href="#cell" x="180"/><use href="#cell" x="210"/><use href="#cell" x="240"/>
+        <use href="#cell" x="270"/><use href="#cell" x="300"/><use href="#cell" x="330"/>
+      </g>
+      <g transform="translate(0,18)">
+        <use href="#cell" x="0"/><use href="#cell" x="30"/><use href="#cell" x="60"/>
+        <use href="#cell" x="90"/><use href="#cell" x="120"/><use href="#cell" x="150"/>
+        <use href="#cell" x="180"/><use href="#cell" x="210"/><use href="#cell" x="240"/>
+        <use href="#cell" x="270"/><use href="#cell" x="300"/><use href="#cell" x="330"/>
+      </g>
+      <g transform="translate(0,36)">
+        <use href="#cell" x="0"/><use href="#cell" x="30"/><use href="#cell" x="60"/>
+        <use href="#cell" x="90"/><use href="#cell" x="120"/><use href="#cell" x="150"/>
+        <use href="#cell" x="180"/><use href="#cell" x="210"/><use href="#cell" x="240"/>
+        <use href="#cell" x="270"/><use href="#cell" x="300"/><use href="#cell" x="330"/>
+      </g>
+      <g transform="translate(0,54)">
+        <use href="#cell" x="0"/><use href="#cell" x="30"/><use href="#cell" x="60"/>
+        <use href="#cell" x="90"/><use href="#cell" x="120"/><use href="#cell" x="150"/>
+        <use href="#cell" x="180"/><use href="#cell" x="210"/><use href="#cell" x="240"/>
+        <use href="#cell" x="270"/><use href="#cell" x="300"/><use href="#cell" x="330"/>
+      </g>
+
+      <!-- The scan head sweeping every row, left to right, forever. -->
+      <rect x="-40" y="-4" width="52" height="74" fill="url(#sweep)">
+        <animate attributeName="x" values="-52;356" dur="2.6s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <text font-family="ui-monospace, monospace" font-size="11" fill="#e79289" y="88">
+      reads every row
+    </text>
+  </g>
+
+  <!-- Arrow ────────────────────────────────────────────────────────────-->
+  <g transform="translate(420, 160)">
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#3f433c" stroke-width="2"/>
+    <path d="M40,-5 L50,0 L40,5 Z" fill="#3f433c"/>
+  </g>
+
+  <!-- Right panel: an index lookup ──────────────────────────────────────-->
+  <g transform="translate(500, 124)">
+    <text font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11"
+          fill="#74786e" y="-8">after &#183; index scan</text>
+
+    <!-- A small btree: root, two children, and the leaf that is hit. -->
+    <g stroke="#3f433c" stroke-width="1.5" fill="none">
+      <line x1="150" y1="14" x2="90" y2="40"/>
+      <line x1="150" y1="14" x2="210" y2="40"/>
+      <line x1="90" y1="52" x2="60" y2="76"/>
+      <line x1="90" y1="52" x2="120" y2="76"/>
+      <line x1="210" y1="52" x2="180" y2="76"/>
+      <line x1="210" y1="52" x2="240" y2="76"/>
+    </g>
+
+    <!-- Nodes. The path that is taken lights up in sequence. -->
+    <rect x="132" y="0" width="36" height="14" rx="3" fill="#2e312c">
+      <animate attributeName="fill" values="#2e312c;#7ec79c;#2e312c"
+               keyTimes="0;0.18;0.5" dur="2.6s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="72" y="38" width="36" height="14" rx="3" fill="#2e312c">
+      <animate attributeName="fill" values="#2e312c;#2e312c;#7ec79c;#2e312c"
+               keyTimes="0;0.18;0.34;0.6" dur="2.6s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="192" y="38" width="36" height="14" rx="3" fill="#2e312c"/>
+    <rect x="42" y="74" width="36" height="14" rx="3" fill="#2e312c"/>
+    <rect x="102" y="74" width="36" height="14" rx="3" fill="#2e312c">
+      <animate attributeName="fill" values="#2e312c;#2e312c;#2e312c;#7ec79c;#7ec79c;#2e312c"
+               keyTimes="0;0.18;0.34;0.5;0.8;1" dur="2.6s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="162" y="74" width="36" height="14" rx="3" fill="#2e312c"/>
+    <rect x="222" y="74" width="36" height="14" rx="3" fill="#2e312c"/>
+
+    <text font-family="ui-monospace, monospace" font-size="11" fill="#7ec79c" y="112">
+      reads three pages
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>idxa</title>
+<link rel="stylesheet" href="/app.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🔎</text></svg>">
+</head>
+<body>
+<div id="app" class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <div class="brand-name">idxa</div>
+        <div class="brand-sub">index advisor</div>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Databases">
+      <div class="nav-head">
+        <span>Databases</span>
+        <span class="nav-count" id="nav-count"></span>
+      </div>
+      <ul class="cluster-list" id="cluster-list" role="list"></ul>
+    </nav>
+
+    <div class="sidebar-foot">
+      <button class="btn btn-primary btn-block" id="add-database">Add database</button>
+      <div class="readonly-note" id="cost-note" title="idxa limits itself to a small share of each server's time">
+        <span class="dot dot-ok" aria-hidden="true"></span>
+        <span id="cost-text">read-only</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main" id="main" tabindex="-1">
+    <button class="btn menu-button" id="menu-button" aria-expanded="false" aria-controls="sidebar">
+      <span aria-hidden="true">☰</span> Databases
+    </button>
+    <div id="view"></div>
+  </main>
+</div>
+
+<div class="sidebar-scrim" id="sidebar-scrim" hidden></div>
+
+<div class="modal-backdrop" id="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="modal">
+    <div class="modal-head">
+      <h2 id="modal-title">Add a database</h2>
+      <button class="btn-icon" id="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

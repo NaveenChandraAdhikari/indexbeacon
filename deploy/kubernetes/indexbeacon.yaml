@@ -1,0 +1,146 @@
+# idxa on Kubernetes.
+#
+# One pod and one volume. The volume matters: idxa keeps the databases you
+# configure and the analyses it has run on disk, so without it a restart loses
+# everything you set up.
+#
+# There is deliberately no Service. idxa listens on the pod's loopback
+# address, which `kubectl port-forward` can reach because it connects inside
+# the pod's own network namespace, and nothing else can. That makes cluster
+# RBAC the thing controlling access, rather than a shared token that every
+# other pod in the cluster could try.
+#
+#     kubectl -n idxa port-forward deploy/idxa 8777:8777
+#
+# The alternative, a ClusterIP service with token authentication, is reachable
+# by every pod in the cluster. If you need that, add --allow-remote and a
+# IDXA_TOKEN back, and create a Service.
+#
+# Apply with scripts/deploy.sh, or edit the placeholders below and apply it
+# yourself.
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: idxa
+---
+# Database passwords, referenced from connection strings as ${NAME}.
+#
+# Keeping them here rather than in the configuration file means the volume
+# holds no secret at all, which is the better arrangement: a volume gets
+# snapshotted and backed up, and a secret does not travel with it.
+#
+# No access token is needed. Nothing can reach the server except a
+# port-forward, which already requires permission on this namespace.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: idxa
+  namespace: idxa
+type: Opaque
+stringData:
+  # Optional: encrypts the configuration file at rest, for when connection
+  # strings must carry their own passwords.
+  # IDXA_CONFIG_KEY: "REPLACE_ME"
+  #
+  # Reference these from a connection string as ${PGPASSWORD_PROD}:
+  # PGPASSWORD_PROD: "..."
+  PLACEHOLDER: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: idxa-data
+  namespace: idxa
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      # Configuration is tiny; the space is for saved analyses, which are
+      # pruned to the last twenty per database.
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: idxa
+  namespace: idxa
+  labels:
+    app.kubernetes.io/name: idxa
+spec:
+  # Exactly one. Two would each keep their own schedule and analyse the same
+  # databases twice, and both would want the same volume.
+  replicas: 1
+  strategy:
+    # ReadWriteOnce means the new pod cannot mount the volume until the old
+    # one lets go.
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: idxa
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: idxa
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: idxa
+          image: IDXA_IMAGE
+          imagePullPolicy: IfNotPresent
+          args:
+            - serve
+            # Loopback inside the pod. port-forward reaches this; other pods
+            # cannot, because they are in a different network namespace.
+            - --listen=127.0.0.1:8777
+          ports:
+            - name: http
+              containerPort: 8777
+          envFrom:
+            - secretRef:
+                 name: idxa
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              # Analysis parses the workload and can be briefly busy; the
+              # steady state is far below this.
+              cpu: "1"
+              memory: 512Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/idxa
+            - name: tmp
+              mountPath: /tmp
+          # These have to be exec probes. An httpGet probe is made by the
+          # kubelet against the pod's IP address, which a server bound to
+          # loopback does not answer; running the check inside the container
+          # is the only way to reach it.
+          readinessProbe:
+            exec:
+              command: [wget, --quiet, --spider, --timeout=3, http://127.0.0.1:8777/healthz]
+            initialDelaySeconds: 2
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: [wget, --quiet, --spider, --timeout=3, http://127.0.0.1:8777/healthz]
+            initialDelaySeconds: 10
+            periodSeconds: 20
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: idxa-data
+        - name: tmp
+          emptyDir: {}

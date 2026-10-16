@@ -1,0 +1,24 @@
+# Single-node PostgreSQL 16 with hypopg + pg_stat_statements.
+#
+#   docker compose -f docker/compose.yml up -d --build
+#   psql "postgres://idxa:idxa@localhost:5499/idxa"
+#
+# Host port 5499 is used to avoid clashing with a local Postgres on 5432.
+services:
+  postgres:
+    build: .
+    image: idxa/postgres:16
+    container_name: idxa-pg16
+    environment:
+      POSTGRES_USER: idxa
+      POSTGRES_PASSWORD: idxa
+      POSTGRES_DB: idxa
+    ports:
+      - "5499:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U idxa -d idxa"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    tmpfs:
+      - /var/lib/postgresql/data
