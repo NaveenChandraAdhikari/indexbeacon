@@ -1,125 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" width="880" height="330" role="img" aria-label="How idxa works: read statistics, parse queries, propose indexes, score them, and confirm each against the planner">
-  <title>How idxa decides</title>
-  <desc>A pipeline. Query statistics are parsed into predicates, turned into candidate indexes, scored, and then each candidate is created hypothetically so the planner can confirm or reject it.</desc>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" width="880" height="330" role="img" aria-label="IndexBeacon signal path from PostgreSQL workload observation to verified planner verdict">
+  <title>IndexBeacon — from signal to safe decision</title>
+  <desc>An animated beacon path connects five observability stages: capture workload signal, map query shape, model a candidate, weigh safety, and verify the planner verdict.</desc>
   <defs>
-    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#7ec79c" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="#7ec79c" stop-opacity="0.9"/>
-      <stop offset="1" stop-color="#7ec79c" stop-opacity="0"/>
-    </linearGradient>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M0,1 L9,5 L0,9 z" fill="#3f433c"/>
-    </marker>
+    <radialGradient id="pipe-bg" cx="50%" cy="0%"><stop stop-color="#112b35"/><stop offset="1" stop-color="#080f15"/></radialGradient>
+    <linearGradient id="pipe-route" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#55e6bd"/><stop offset=".5" stop-color="#799cff"/><stop offset="1" stop-color="#f6c76d"/></linearGradient>
+    <filter id="pipe-glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <style>.p{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.pm{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.pt{fill:#e8f4f3}.ps{fill:#7e9ba5}.pc{fill:#0e2028;stroke:#294650}.pg{fill:#55e6bd}.pa{fill:#f6c76d}</style>
   </defs>
-
-  <style>
-    .box   { fill:#1e201d; stroke:#2e312c; stroke-width:1; }
-    .title { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-             font-size:13px; font-weight:600; fill:#eceee9; }
-    .body  { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-             font-size:11px; fill:#a2a69c; }
-    .mono  { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.5px; fill:#7ec79c; }
-    .step  { font-family:ui-monospace,monospace; font-size:10px; fill:#74786e; }
-  </style>
-
-  <rect width="880" height="330" rx="14" fill="#161715"/>
-
-  <!-- The connecting line, with a pulse travelling along it so the eye
-       follows the direction of the pipeline. -->
-  <line x1="60" y1="118" x2="820" y2="118" stroke="#2e312c" stroke-width="2"/>
-  <circle r="4" fill="#7ec79c" opacity="0.9">
-    <animateMotion dur="4.5s" repeatCount="indefinite"
-                   path="M60,118 L820,118"/>
-    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.05;0.9;1"
-             dur="4.5s" repeatCount="indefinite"/>
-  </circle>
-
-  <!-- 1. Statistics ─────────────────────────────────────────────────────-->
-  <g transform="translate(40, 60)">
-    <rect class="box" width="150" height="116" rx="10"/>
-    <text class="step" x="14" y="20">1</text>
-    <text class="title" x="14" y="40">Read</text>
-    <text class="body" x="14" y="60">Query statistics,</text>
-    <text class="body" x="14" y="76">table and column</text>
-    <text class="body" x="14" y="92">statistics.</text>
-    <text class="mono" x="14" y="108">pg_stat_statements</text>
-  </g>
-
-  <!-- 2. Parse ──────────────────────────────────────────────────────────-->
-  <g transform="translate(210, 60)">
-    <rect class="box" width="150" height="116" rx="10"/>
-    <text class="step" x="14" y="20">2</text>
-    <text class="title" x="14" y="40">Parse</text>
-    <text class="body" x="14" y="60">The real PostgreSQL</text>
-    <text class="body" x="14" y="76">grammar, not regular</text>
-    <text class="body" x="14" y="92">expressions.</text>
-    <text class="mono" x="14" y="108">WHERE &#183; JOIN &#183; ORDER BY</text>
-  </g>
-
-  <!-- 3. Propose ────────────────────────────────────────────────────────-->
-  <g transform="translate(380, 60)">
-    <rect class="box" width="150" height="116" rx="10"/>
-    <text class="step" x="14" y="20">3</text>
-    <text class="title" x="14" y="40">Propose</text>
-    <text class="body" x="14" y="60">Equality columns</text>
-    <text class="body" x="14" y="76">first, then a range,</text>
-    <text class="body" x="14" y="92">then the sort.</text>
-    <text class="mono" x="14" y="108">btree &#183; gin &#183; brin</text>
-  </g>
-
-  <!-- 4. Score ──────────────────────────────────────────────────────────-->
-  <g transform="translate(550, 60)">
-    <rect class="box" width="150" height="116" rx="10"/>
-    <text class="step" x="14" y="20">4</text>
-    <text class="title" x="14" y="40">Score</text>
-    <text class="body" x="14" y="60">Saving weighed</text>
-    <text class="body" x="14" y="76">against the cost on</text>
-    <text class="body" x="14" y="92">every write.</text>
-    <text class="mono" x="14" y="108">planner cost constants</text>
-  </g>
-
-  <!-- 5. Confirm ────────────────────────────────────────────────────────-->
-  <g transform="translate(720, 60)">
-    <rect class="box" width="120" height="116" rx="10" stroke="#7ec79c" stroke-opacity="0.5"/>
-    <text class="step" x="14" y="20">5</text>
-    <text class="title" x="14" y="40">Confirm</text>
-    <text class="body" x="14" y="60">Create it</text>
-    <text class="body" x="14" y="76">hypothetically and</text>
-    <text class="body" x="14" y="92">re-plan.</text>
-    <text class="mono" x="14" y="108">hypopg</text>
-
-    <!-- A quiet pulse on the box that matters most. -->
-    <rect width="120" height="116" rx="10" fill="none" stroke="#7ec79c" stroke-width="1.5">
-      <animate attributeName="stroke-opacity" values="0;0.8;0"
-               dur="4.5s" begin="3.2s" repeatCount="indefinite"/>
-    </rect>
-  </g>
-
-  <!-- The verdict ────────────────────────────────────────────────────────-->
-  <g transform="translate(40, 220)">
-    <text class="body" x="0" y="0" font-size="12" fill="#74786e">
-      The last step is the one that matters: a cost model can be confident and wrong.
-    </text>
-
-    <!-- Two outcomes. -->
-    <g transform="translate(0, 20)">
-      <rect width="392" height="62" rx="8" fill="#1c2c23"/>
-      <text class="mono" x="16" y="24" fill="#7ec79c">planner confirmed</text>
-      <text class="body" x="16" y="44">cost falls from 23,972 to 4 &#183; kept, ranked by what it saves</text>
-      <circle cx="374" cy="31" r="5" fill="#7ec79c">
-        <animate attributeName="opacity" values="0.35;1;0.35" dur="2.4s" repeatCount="indefinite"/>
-      </circle>
+  <rect width="880" height="330" rx="16" fill="url(#pipe-bg)" stroke="#203843"/>
+  <g class="p">
+    <text x="36" y="40" class="pt" font-size="21" font-weight="700">THE SIGNAL PATH</text><text x="36" y="61" class="ps" font-size="11" letter-spacing="1.8">INDEXBEACON DECIDES WITH EVIDENCE</text>
+    <g transform="translate(42 95)">
+      <path d="M34 54 C148 5 246 105 348 54 S551 5 720 54" fill="none" stroke="#213c46" stroke-width="3"/>
+      <path d="M34 54 C148 5 246 105 348 54 S551 5 720 54" fill="none" stroke="url(#pipe-route)" stroke-width="2" stroke-dasharray="9 12"><animate attributeName="stroke-dashoffset" from="0" to="-42" dur="3.2s" repeatCount="indefinite"/></path>
+       <g transform="translate(0 0)"><circle cx="34" cy="54" r="18" class="pc"/><circle cx="34" cy="54" r="6" class="pg" filter="url(#pipe-glow)"/><text x="0" y="97" class="pt" font-size="13" font-weight="600">COLLECT</text><text x="0" y="116" class="ps" font-size="11">workload + catalog</text><text x="0" y="136" class="pm pg" font-size="10">stats · indexes · tables</text></g>
+       <g transform="translate(172 0)"><circle cx="34" cy="54" r="18" class="pc"/><path d="M25 54h18M34 45v18" stroke="#799cff" stroke-width="2"/><text x="0" y="97" class="pt" font-size="13" font-weight="600">PARSE</text><text x="0" y="116" class="ps" font-size="11">PostgreSQL grammar</text><text x="0" y="136" class="pm" fill="#799cff" font-size="10">WHERE · JOIN · SORT</text></g>
+       <g transform="translate(344 0)"><circle cx="34" cy="54" r="18" class="pc"/><path d="M25 61l9-14 9 14z" fill="none" stroke="#799cff" stroke-width="2"/><text x="0" y="97" class="pt" font-size="13" font-weight="600">GENERATE</text><text x="0" y="116" class="ps" font-size="11">candidate indexes</text><text x="0" y="136" class="pm" fill="#799cff" font-size="10">btree · gin · brin</text></g>
+       <g transform="translate(516 0)"><circle cx="34" cy="54" r="18" class="pc"/><path d="M25 57h18M28 50h12" stroke="#f6c76d" stroke-width="2"/><text x="0" y="97" class="pt" font-size="13" font-weight="600">MERGE + SCORE</text><text x="0" y="116" class="ps" font-size="11">dedupe and rank</text><text x="0" y="136" class="pm pa" font-size="10">benefit · write · size</text></g>
+       <g transform="translate(688 0)"><circle cx="34" cy="54" r="18" fill="#123b39" stroke="#55e6bd"/><path d="M25 54l6 6 12-14" fill="none" stroke="#55e6bd" stroke-width="2.5"/><text x="0" y="97" class="pt" font-size="13" font-weight="600">VALIDATE</text><text x="0" y="116" class="ps" font-size="11">HypoPG + re-plan</text><text x="0" y="136" class="pm pg" font-size="10">planner verdict</text></g>
     </g>
-
-    <g transform="translate(408, 20)">
-      <rect width="392" height="62" rx="8" fill="#2b2416"/>
-      <text class="mono" x="16" y="24" fill="#d9b45f">planner declined</text>
-      <text class="body" x="16" y="44">shown and demoted &#183; an unused index costs disk and every write</text>
-      <circle cx="374" cy="31" r="5" fill="#d9b45f">
-        <animate attributeName="opacity" values="0.35;1;0.35" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
-      </circle>
-    </g>
+    <g transform="translate(42 267)"><rect width="796" height="36" rx="8" fill="#0b191f" stroke="#294650"/><circle cx="20" cy="18" r="5" class="pg"/><text x="36" y="22" class="pt" font-size="11">A recommendation is a reviewable finding — not an automatic schema change.</text><text x="758" y="22" class="pm pg" text-anchor="end" font-size="10">SAFE BY DEFAULT</text></g>
   </g>
 </svg>

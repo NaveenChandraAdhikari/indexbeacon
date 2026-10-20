@@ -1,122 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="880" height="420" role="img" aria-label="A terminal session running idxa analyze, showing three recommended indexes confirmed against the planner">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="880" height="420" role="img" aria-label="A terminal session running idxa analyze, showing three recommended indexes confirmed against the PostgreSQL planner">
   <title>idxa analyze</title>
-  <desc>A terminal typing out `idxa analyze` and printing three recommendations, each confirmed by the planner, with the reasoning underneath one of them.</desc>
-
+  <desc>A terminal types an idxa analyze command and prints three workload-backed recommendations, each confirmed against the planner.</desc>
   <style>
-    .win  { fill:#1e201d; }
-    .bar  { fill:#131412; }
-    .m    { font-family:ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace; font-size:12.5px; }
-    .dim  { fill:#74786e; }
-    .txt  { fill:#eceee9; }
-    .ok   { fill:#7ec79c; }
-    .warn { fill:#d9b45f; }
-    .num  { fill:#8fbde5; }
-    /* Every line starts hidden and is revealed in turn, so the output reads
-       as it would if you ran it, rather than appearing all at once. */
-    .line { opacity:0; }
+    .win{fill:#0d1b24}.bar{fill:#08141c}.m{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}.dim{fill:#7895a5}.txt{fill:#e6f0f4}.ok{fill:#83a9e8}.warn{fill:#f4c86b}.num{fill:#9ac7ff}.line{opacity:0}
   </style>
-
   <rect width="880" height="420" rx="12" class="win"/>
-  <rect width="880" height="34" rx="12" class="bar"/>
-  <rect y="22" width="880" height="12" class="bar"/>
-  <circle cx="22" cy="17" r="5.5" fill="#e79289"/>
-  <circle cx="42" cy="17" r="5.5" fill="#d9b45f"/>
-  <circle cx="62" cy="17" r="5.5" fill="#7ec79c"/>
+  <rect width="880" height="34" rx="12" class="bar"/><rect y="22" width="880" height="12" class="bar"/>
+  <circle cx="22" cy="17" r="5.5" fill="#e89084"/><circle cx="42" cy="17" r="5.5" fill="#f4c86b"/><circle cx="62" cy="17" r="5.5" fill="#83a9e8"/>
   <text x="440" y="21" class="m dim" text-anchor="middle" font-size="11">idxa</text>
-
-  <g transform="translate(24, 60)">
-    <!-- The command, typed. -->
-    <text class="m" y="0">
-      <tspan class="ok">$</tspan>
-      <tspan class="txt" x="18">idxa analyze --dsn postgres://user@host/shop</tspan>
-    </text>
-    <!-- A cursor that blinks, then moves out of the way. -->
-    <rect x="330" y="-10" width="7" height="13" class="ok">
-      <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="3"/>
-      <animate attributeName="opacity" values="1;0" begin="3s" dur="0.1s" fill="freeze"/>
-    </rect>
-
-    <g class="line" transform="translate(0, 30)">
-      <animate attributeName="opacity" values="0;1" begin="3.2s" dur="0.25s" fill="freeze"/>
-      <text class="m dim">reading statistics from 1 node</text>
-    </g>
-
-    <g class="line" transform="translate(0, 50)">
-      <animate attributeName="opacity" values="0;1" begin="3.7s" dur="0.25s" fill="freeze"/>
-      <text class="m dim">parsing 2,481 statements</text>
-    </g>
-
-    <g class="line" transform="translate(0, 70)">
-      <animate attributeName="opacity" values="0;1" begin="4.2s" dur="0.25s" fill="freeze"/>
-      <text class="m dim">confirming candidates with the planner</text>
-    </g>
-
-    <!-- The table header. -->
-    <g class="line" transform="translate(0, 104)">
-      <animate attributeName="opacity" values="0;1" begin="4.9s" dur="0.3s" fill="freeze"/>
-      <text class="m dim" font-size="11">
-        <tspan x="0">TABLE</tspan><tspan x="170">INDEX</tspan><tspan x="470">SIZE</tspan><tspan x="552">CONF</tspan><tspan x="612">PLANNER</tspan>
-      </text>
-    </g>
-
-    <g class="line" transform="translate(0, 126)">
-      <animate attributeName="opacity" values="0;1" begin="5.2s" dur="0.3s" fill="freeze"/>
-      <text class="m">
-        <tspan class="txt">shop.events</tspan>
-        <tspan class="dim" x="170">(customer_id, event_type, occurred_at)</tspan>
-        <tspan class="num" x="470">49.8 MB</tspan>
-        <tspan class="dim" x="552">high</tspan>
-        <tspan class="ok" x="612">confirmed</tspan>
-      </text>
-    </g>
-
-    <g class="line" transform="translate(0, 146)">
-      <animate attributeName="opacity" values="0;1" begin="5.5s" dur="0.3s" fill="freeze"/>
-      <text class="m">
-        <tspan class="txt">shop.orders</tspan>
-        <tspan class="dim" x="170">(customer_id, created_at DESC)</tspan>
-        <tspan class="num" x="470">3.9 MB</tspan>
-        <tspan class="dim" x="552">high</tspan>
-        <tspan class="ok" x="612">confirmed</tspan>
-      </text>
-    </g>
-
-    <g class="line" transform="translate(0, 166)">
-      <animate attributeName="opacity" values="0;1" begin="5.8s" dur="0.3s" fill="freeze"/>
-      <text class="m">
-        <tspan class="txt">shop.products</tspan>
-        <tspan class="dim" x="170">(sku)</tspan>
-        <tspan class="num" x="470">160 KB</tspan>
-        <tspan class="dim" x="552">high</tspan>
-        <tspan class="ok" x="612">confirmed</tspan>
-      </text>
-    </g>
-
-    <!-- The statement and its justification. -->
-    <g class="line" transform="translate(0, 202)">
-      <animate attributeName="opacity" values="0;1" begin="6.4s" dur="0.4s" fill="freeze"/>
-      <text class="m ok">CREATE INDEX CONCURRENTLY IF NOT EXISTS events_customer_id_event_type_idx</text>
-      <text class="m ok" y="18"><tspan x="18">ON shop.events USING btree (customer_id, event_type, occurred_at DESC);</tspan></text>
-    </g>
-
-    <g class="line" transform="translate(0, 250)">
-      <animate attributeName="opacity" values="0;1" begin="6.9s" dur="0.4s" fill="freeze"/>
-      <text class="m dim" font-size="11.5"><tspan x="28">table has 7.4k sequential scans reading 4.1G rows</tspan></text>
-      <text class="m dim" font-size="11.5" y="17"><tspan x="28">4.1k calls across 1 query in the statistics window</tspan></text>
-      <text class="m dim" font-size="11.5" y="34"><tspan x="28">table takes 278 writes per second, which this index must also maintain</tspan></text>
-      <text class="m warn" font-size="11.5" y="51"><tspan x="28">planner confirms cost falls from 23,972 to 4</tspan></text>
-    </g>
-
-    <!-- The closing reassurance. -->
-    <g class="line" transform="translate(0, 328)">
-      <animate attributeName="opacity" values="0;1" begin="7.6s" dur="0.4s" fill="freeze"/>
-      <text class="m dim" font-size="11.5">idxa does not run these. Review them, then apply them yourself.</text>
-    </g>
+  <g transform="translate(24,60)">
+    <text class="m" y="0"><tspan class="ok">$</tspan><tspan class="txt" x="18">idxa analyze --dsn postgres://user@host/shop</tspan></text>
+    <rect x="330" y="-10" width="7" height="13" class="ok"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="3"/><animate attributeName="opacity" values="1;0" begin="3s" dur=".1s" fill="freeze"/></rect>
+    <g class="line" transform="translate(0,30)"><animate attributeName="opacity" values="0;1" begin="3.2s" dur=".25s" fill="freeze"/><text class="m dim">reading workload and table statistics from 1 node</text></g>
+    <g class="line" transform="translate(0,50)"><animate attributeName="opacity" values="0;1" begin="3.7s" dur=".25s" fill="freeze"/><text class="m dim">parsing 2,481 PostgreSQL statements</text></g>
+    <g class="line" transform="translate(0,70)"><animate attributeName="opacity" values="0;1" begin="4.2s" dur=".25s" fill="freeze"/><text class="m dim">testing candidate paths with HypoPG and EXPLAIN</text></g>
+    <g class="line" transform="translate(0,104)"><animate attributeName="opacity" values="0;1" begin="4.9s" dur=".3s" fill="freeze"/><text class="m dim" font-size="11"><tspan x="0">TABLE</tspan><tspan x="170">INDEX</tspan><tspan x="470">SIZE</tspan><tspan x="552">CONF</tspan><tspan x="612">PLANNER</tspan></text></g>
+    <g class="line" transform="translate(0,126)"><animate attributeName="opacity" values="0;1" begin="5.2s" dur=".3s" fill="freeze"/><text class="m"><tspan class="txt">shop.events</tspan><tspan class="dim" x="170">(customer_id, event_type, occurred_at)</tspan><tspan class="num" x="470">49.8 MB</tspan><tspan class="dim" x="552">high</tspan><tspan class="ok" x="612">confirmed</tspan></text></g>
+    <g class="line" transform="translate(0,146)"><animate attributeName="opacity" values="0;1" begin="5.5s" dur=".3s" fill="freeze"/><text class="m"><tspan class="txt">shop.orders</tspan><tspan class="dim" x="170">(customer_id, created_at DESC)</tspan><tspan class="num" x="470">3.9 MB</tspan><tspan class="dim" x="552">high</tspan><tspan class="ok" x="612">confirmed</tspan></text></g>
+    <g class="line" transform="translate(0,166)"><animate attributeName="opacity" values="0;1" begin="5.8s" dur=".3s" fill="freeze"/><text class="m"><tspan class="txt">shop.products</tspan><tspan class="dim" x="170">(sku)</tspan><tspan class="num" x="470">160 KB</tspan><tspan class="dim" x="552">high</tspan><tspan class="ok" x="612">confirmed</tspan></text></g>
+    <g class="line" transform="translate(0,202)"><animate attributeName="opacity" values="0;1" begin="6.4s" dur=".4s" fill="freeze"/><text class="m ok">CREATE INDEX CONCURRENTLY IF NOT EXISTS events_customer_id_event_type_idx</text><text class="m ok" y="18"><tspan x="18">ON shop.events USING btree (customer_id, event_type, occurred_at DESC);</tspan></text></g>
+    <g class="line" transform="translate(0,250)"><animate attributeName="opacity" values="0;1" begin="6.9s" dur=".4s" fill="freeze"/><text class="m dim" font-size="11.5"><tspan x="28">table has 7.4k sequential scans reading 4.1G rows</tspan></text><text class="m dim" font-size="11.5" y="17"><tspan x="28">4.1k calls across 1 query in the workload window</tspan></text><text class="m dim" font-size="11.5" y="34"><tspan x="28">table takes 278 writes per second, which this index must maintain</tspan></text><text class="m warn" font-size="11.5" y="51"><tspan x="28">planner verifies cost falls from 23,972 to 4</tspan></text></g>
+    <g class="line" transform="translate(0,328)"><animate attributeName="opacity" values="0;1" begin="7.6s" dur=".4s" fill="freeze"/><text class="m dim" font-size="11.5">idxa does not run these. Review them, then apply them yourself.</text></g>
   </g>
-
-  <!-- Restart the whole sequence so the image loops rather than freezing. -->
-  <rect width="880" height="420" fill="#1e201d" opacity="0">
-    <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.93;0.97;1"
-             dur="11s" repeatCount="indefinite"/>
-  </rect>
+  <rect width="880" height="420" fill="#0d1b24" opacity="0"><animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.93;0.97;1" dur="11s" repeatCount="indefinite"/></rect>
 </svg>

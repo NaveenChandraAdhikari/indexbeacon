@@ -1,135 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 260" width="880" height="260" role="img" aria-label="idxa, a PostgreSQL index advisor that validates its recommendations against the planner">
-  <title>idxa</title>
-  <desc>An animated banner: a sequential scan sweeping a table, replaced by an index lookup.</desc>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 260" width="880" height="260" role="img" aria-label="IndexBeacon turns PostgreSQL workload evidence into a planner-verified index recommendation">
+  <title>IndexBeacon — workload evidence to planner-verified index</title>
+  <desc>A simple PostgreSQL performance diagram: query pressure enters from the left, IndexBeacon evaluates the evidence, and a planner-verified index tree appears on the right.</desc>
   <defs>
-    <!-- The palette follows the interface: a muted green against near-black,
-         readable on both GitHub themes because the background is painted. -->
-    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#7ec79c"/>
-      <stop offset="1" stop-color="#5aa8c8"/>
+    <linearGradient id="hb-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#10252c"/>
+      <stop offset="1" stop-color="#091116"/>
     </linearGradient>
-
-    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#e79289" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="#e79289" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#e79289" stop-opacity="0"/>
+    <linearGradient id="hb-flow" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#61d8bd"/>
+      <stop offset="1" stop-color="#83a9e8"/>
     </linearGradient>
-
-    <!-- One row of the table, reused across the grid. -->
-    <g id="cell">
-      <rect width="26" height="12" rx="2" fill="#2e312c"/>
-    </g>
+    <filter id="hb-soft-glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
 
-  <rect width="880" height="260" rx="14" fill="#161715"/>
+  <rect width="880" height="260" rx="16" fill="url(#hb-bg)" stroke="#29434b"/>
 
-  <!-- Wordmark ───────────────────────────────────────────────────────────-->
-  <g transform="translate(48, 52)">
-    <rect width="34" height="34" rx="9" fill="url(#mark)"/>
-    <!-- A magnifier over the mark, drawn rather than an emoji so it renders
-         identically everywhere. -->
-    <circle cx="15" cy="15" r="7.5" fill="none" stroke="#161715" stroke-width="2.6"/>
-    <line x1="20.5" y1="20.5" x2="26" y2="26" stroke="#161715" stroke-width="2.6" stroke-linecap="round"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+    <text x="38" y="42" fill="#e9f4f1" font-size="27" font-weight="700" letter-spacing="-.8">INDEXBEACON</text>
+    <text x="39" y="64" fill="#86a1a8" font-size="12" letter-spacing="2">POSTGRESQL PERFORMANCE EVIDENCE</text>
 
-    <text x="48" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-          font-size="30" font-weight="650" fill="#eceee9" letter-spacing="-0.5">idxa</text>
-    <text x="48" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-          font-size="13" fill="#a2a69c">Find the indexes your queries are missing</text>
-  </g>
-
-  <!-- Read-only badge ────────────────────────────────────────────────────-->
-  <g transform="translate(700, 52)">
-    <rect width="132" height="26" rx="13" fill="#1c2c23"/>
-    <circle cx="16" cy="13" r="4" fill="#7ec79c"/>
-    <text x="28" y="17" font-family="-apple-system, BlinkMacSystemFont, sans-serif"
-          font-size="12" font-weight="600" fill="#7ec79c">never writes</text>
-  </g>
-
-  <!-- Left panel: a sequential scan ─────────────────────────────────────-->
-  <g transform="translate(48, 124)">
-    <text font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11"
-          fill="#74786e" y="-8">before &#183; sequential scan</text>
-
-    <g>
-      <!-- 5 rows x 12 columns of cells. -->
-      <g transform="translate(0,0)">
-        <use href="#cell" x="0"/><use href="#cell" x="30"/><use href="#cell" x="60"/>
-        <use href="#cell" x="90"/><use href="#cell" x="120"/><use href="#cell" x="150"/>
-        <use href="#cell" x="180"/><use href="#cell" x="210"/><use href="#cell" x="240"/>
-        <use href="#cell" x="270"/><use href="#cell" x="300"/><use href="#cell" x="330"/>
-      </g>
-      <g transform="translate(0,18)">
-        <use href="#cell" x="0"/><use href="#cell" x="30"/><use href="#cell" x="60"/>
-        <use href="#cell" x="90"/><use href="#cell" x="120"/><use href="#cell" x="150"/>
-        <use href="#cell" x="180"/><use href="#cell" x="210"/><use href="#cell" x="240"/>
-        <use href="#cell" x="270"/><use href="#cell" x="300"/><use href="#cell" x="330"/>
-      </g>
-      <g transform="translate(0,36)">
-        <use href="#cell" x="0"/><use href="#cell" x="30"/><use href="#cell" x="60"/>
-        <use href="#cell" x="90"/><use href="#cell" x="120"/><use href="#cell" x="150"/>
-        <use href="#cell" x="180"/><use href="#cell" x="210"/><use href="#cell" x="240"/>
-        <use href="#cell" x="270"/><use href="#cell" x="300"/><use href="#cell" x="330"/>
-      </g>
-      <g transform="translate(0,54)">
-        <use href="#cell" x="0"/><use href="#cell" x="30"/><use href="#cell" x="60"/>
-        <use href="#cell" x="90"/><use href="#cell" x="120"/><use href="#cell" x="150"/>
-        <use href="#cell" x="180"/><use href="#cell" x="210"/><use href="#cell" x="240"/>
-        <use href="#cell" x="270"/><use href="#cell" x="300"/><use href="#cell" x="330"/>
-      </g>
-
-      <!-- The scan head sweeping every row, left to right, forever. -->
-      <rect x="-40" y="-4" width="52" height="74" fill="url(#sweep)">
-        <animate attributeName="x" values="-52;356" dur="2.6s" repeatCount="indefinite"/>
-      </rect>
+    <!-- Real input: the workload and query shape IndexBeacon observes. -->
+    <g transform="translate(40 96)">
+      <text fill="#7d9aa1" font-size="10" letter-spacing="1.5">INPUT / WORKLOAD</text>
+      <text y="28" fill="#e9f4f1" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">SELECT id, created_at</text>
+      <text y="45" fill="#e9f4f1" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">FROM orders</text>
+      <text y="62" fill="#61d8bd" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">WHERE customer_id = $1</text>
+      <text y="79" fill="#83a9e8" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">ORDER BY created_at DESC</text>
+      <line x1="0" y1="96" x2="256" y2="96" stroke="#28434b"/>
+      <text y="116" fill="#f4c86b" font-size="11">4.6k calls · 1.8k seq scans</text>
     </g>
 
-    <text font-family="ui-monospace, monospace" font-size="11" fill="#e79289" y="88">
-      reads every row
-    </text>
-  </g>
-
-  <!-- Arrow ────────────────────────────────────────────────────────────-->
-  <g transform="translate(420, 160)">
-    <line x1="0" y1="0" x2="40" y2="0" stroke="#3f433c" stroke-width="2"/>
-    <path d="M40,-5 L50,0 L40,5 Z" fill="#3f433c"/>
-  </g>
-
-  <!-- Right panel: an index lookup ──────────────────────────────────────-->
-  <g transform="translate(500, 124)">
-    <text font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11"
-          fill="#74786e" y="-8">after &#183; index scan</text>
-
-    <!-- A small btree: root, two children, and the leaf that is hit. -->
-    <g stroke="#3f433c" stroke-width="1.5" fill="none">
-      <line x1="150" y1="14" x2="90" y2="40"/>
-      <line x1="150" y1="14" x2="210" y2="40"/>
-      <line x1="90" y1="52" x2="60" y2="76"/>
-      <line x1="90" y1="52" x2="120" y2="76"/>
-      <line x1="210" y1="52" x2="180" y2="76"/>
-      <line x1="210" y1="52" x2="240" y2="76"/>
+    <!-- Evidence path: simple, not decorative. -->
+    <g transform="translate(318 142)">
+      <line x1="0" y1="0" x2="100" y2="0" stroke="#36525a" stroke-width="2"/>
+      <path d="M100,-6 L112,0 L100,6 Z" fill="#61d8bd"/>
+      <circle cx="44" cy="0" r="4" fill="#61d8bd" filter="url(#hb-soft-glow)">
+        <animate attributeName="cx" values="0;100" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+      <text x="0" y="-16" fill="#7d9aa1" font-size="10" letter-spacing="1.2">EVIDENCE</text>
+      <text x="0" y="26" fill="#61d8bd" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10">HypoPG + EXPLAIN</text>
     </g>
 
-    <!-- Nodes. The path that is taken lights up in sequence. -->
-    <rect x="132" y="0" width="36" height="14" rx="3" fill="#2e312c">
-      <animate attributeName="fill" values="#2e312c;#7ec79c;#2e312c"
-               keyTimes="0;0.18;0.5" dur="2.6s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="72" y="38" width="36" height="14" rx="3" fill="#2e312c">
-      <animate attributeName="fill" values="#2e312c;#2e312c;#7ec79c;#2e312c"
-               keyTimes="0;0.18;0.34;0.6" dur="2.6s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="192" y="38" width="36" height="14" rx="3" fill="#2e312c"/>
-    <rect x="42" y="74" width="36" height="14" rx="3" fill="#2e312c"/>
-    <rect x="102" y="74" width="36" height="14" rx="3" fill="#2e312c">
-      <animate attributeName="fill" values="#2e312c;#2e312c;#2e312c;#7ec79c;#7ec79c;#2e312c"
-               keyTimes="0;0.18;0.34;0.5;0.8;1" dur="2.6s" repeatCount="indefinite"/>
-    </rect>
-    <rect x="162" y="74" width="36" height="14" rx="3" fill="#2e312c"/>
-    <rect x="222" y="74" width="36" height="14" rx="3" fill="#2e312c"/>
+    <!-- Final result: an explicit tree-shaped index lookup path. -->
+    <g transform="translate(480 82)">
+      <text fill="#7d9aa1" font-size="10" letter-spacing="1.5">PLANNER-VERIFIED RESULT</text>
+      <g transform="translate(28 24)">
+        <!-- root -> branches -> leaves: a deliberately unmistakable tree -->
+        <g fill="none" stroke="#3a5c64" stroke-width="2">
+          <path d="M152 8 L92 54 M152 8 L212 54 M92 54 L54 104 M92 54 L130 104 M212 54 L174 104 M212 54 L250 104"/>
+        </g>
+        <g fill="#122a31" stroke="#61d8bd" stroke-width="1.8">
+          <circle cx="152" cy="8" r="12">
+          <animate attributeName="fill" values="#122a31;#1f5e57;#122a31" dur="2.4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="92" cy="54" r="11"/>
+          <circle cx="212" cy="54" r="11"/>
+          <circle cx="54" cy="104" r="10"/>
+          <circle cx="130" cy="104" r="10"/>
+          <circle cx="174" cy="104" r="10"/>
+          <circle cx="250" cy="104" r="10"/>
+        </g>
+      </g>
+      <text x="0" y="244" fill="#e9f4f1" font-size="14" font-weight="600">orders_customer_date_idx</text>
+      <text x="0" y="258" fill="#61d8bd" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">planner uses the path · cost 18 → 3</text>
+    </g>
 
-    <text font-family="ui-monospace, monospace" font-size="11" fill="#7ec79c" y="112">
-      reads three pages
-    </text>
+    <g transform="translate(748 36)">
+      <circle cx="8" cy="8" r="5" fill="#61d8bd"/>
+      <text x="20" y="12" fill="#61d8bd" font-size="10" letter-spacing="1.2">READ-ONLY</text>
+    </g>
   </g>
 </svg>
